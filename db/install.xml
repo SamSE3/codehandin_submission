@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="mod/assign/submission/codehandin/db" VERSION="20131101" COMMENT="XMLDB file for Moodle mod/codehandin"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+    <TABLES>
+        <TABLE NAME="codehandin" COMMENT="adds additonal codehandin fields to an assignment" PREVIOUS="codehandin_language" NEXT="codehandin_checkpoint">
+            <FIELDS>             
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="the id of the assignment (references id in mdl_assign) also must be called id to use moodle functions" NEXT="proglangid"/>
+                <FIELD NAME="proglangid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="the id of the programming language (a ref to mdl_CodeHandIn _proglang)" PREVIOUS="id" NEXT="mustattemptcompile"/>                
+                <FIELD NAME="mustattemptcompile" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="an option that lets assignments specify that they must attempt a compile/check before they can be submitted" PREVIOUS="proglangid" NEXT="spectest"/>
+                <FIELD NAME="spectest" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="pointer to a specific test file that can be used to replace or in conjunction with checkpoints and tests assessment definition." PREVIOUS="mustattemptcompile" NEXT="spectestruntimeargs"/>
+                <FIELD NAME="spectestruntimeargs" TYPE="char" LENGTH="200" NOTNULL="false" COMMENT="arguments for the specific test file for regular testing" PREVIOUS="spectest" NEXT="spectestaruntimeargs"/>
+                <FIELD NAME="spectestaruntimeargs" TYPE="char" LENGTH="200" NOTNULL="false" COMMENT="arguments for the specific test file for assessment testing" PREVIOUS="spectestruntimeargs" NEXT="studentfile"/> 
+                <FIELD NAME="studentfile" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="pointer to sample test file that students can download" PREVIOUS="spectestonly" NEXT="spectestonly"/>                
+                <FIELD NAME="spectestonly" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENECE="false" COMMENT="allows the use of a specific test file only" PREVIOUS="assessmentfile" NEXT="funcpercent"/> 
+                <FIELD NAME="funcpercent" TYPE="int" LENGTH="3" NOTNULL="true" DEFAULT="100" SEQUENECE="false" COMMENT="the mark allocated for the functional part of the assignment (max from testing)" PREVIOUS="spectestonly"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>        
+                <KEY NAME="assignmentid" TYPE="foreign" FIELDS="id" REFTABLE="assign" REFFIELDS="id" COMMENT="The assignment instance these codehandin details relate to"/>
+                <KEY NAME="proglangid" TYPE="foreign" FIELDS="proglangid" REFTABLE="codehandin_proglang" REFFIELDS="id" COMMENT="the language used in this assignment"/>
+            </KEYS>
+        </TABLE>        
+        <TABLE NAME="codehandin_proglang" COMMENT="Stores the languages the plugin can use" NEXT="codehandin">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" COMMENT="the id of the programming language automatically assigned" NEXT="name"/>
+                <FIELD NAME="name" TYPE="char" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="the name of the programming language" PREVIOUS="id" NEXT="defaultscript"/>
+                <FIELD NAME="defaultscript" TYPE="char" LENGTH="200" NOTNULL="true" SEQUENCE="false" COMMENT="the default script to use the language" PREVIOUS="name"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/> 
+            </KEYS>
+        </TABLE>
+        <TABLE NAME="codehandin_checkpoint" COMMENT="A checkpoint in a programming assignments" PREVIOUS="codehandin" NEXT="codehandin_test">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" COMMENT="the id of the checkpoint automatically assigned" NEXT="assignmentid"/>                
+                <FIELD NAME="assignmentid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="the id of the assignment of which the checkpoint belongs to" PREVIOUS="id" NEXT="name" />
+                <FIELD NAME="name" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="the name of the checkpoint" PREVIOUS="assignmentid" NEXT="description"/>
+                <FIELD NAME="description" TYPE="char" LENGTH="1333" NOTNULL="false" SEQUENCE="false" COMMENT="a description of the checkpoint (can include hints etc.)" PREVIOUS="name" NEXT="runtime_args"/>
+                <FIELD NAME="runtimeargs" TYPE="char" LENGTH="200" NOTNULL="false" SEQUENCE="false" COMMENT="runtime arguments for the checkpoint" PREVIOUS="description" NEXT="ordering"/>
+                <FIELD NAME="ordering" TYPE="int" LENGTH="3" NOTNULL="true" SEQUENCE="false" COMMENT="an integer that defined the order of the checkpoints for an assignment" PREVIOUS="runtime_args" NEXT="marks"/>
+                <FIELD NAME="marks" TYPE="int" LENGTH="3" NOTNULL="true" SEQUENCE="false" DEFAULT="2" COMMENT="the marks assigned for this particular checkpoint" PREVIOUS="ordering"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+                <KEY NAME="assignmentid" TYPE="foreign" FIELDS="assignmentid" REFTABLE="codehandin" REFFIELDS="id"/>
+            </KEYS>
+            <INDEXES>
+                <INDEX NAME="assignmentid" UNIQUE="false" FIELDS="assignmentid"/>
+            </INDEXES>                
+        </TABLE>
+        <TABLE NAME="codehandin_test" COMMENT="A test as part of a checkpoint ... some should be private" PREVIOUS="codehandin_checkpoint" NEXT="codehandin_submission">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" COMMENT="the id of the test automatically assigned" NEXT="checkpointid"/>
+                <FIELD NAME="checkpointid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="the id of the checkpoint to which the test belongs" PREVIOUS="id" NEXT="status"/>
+                <FIELD NAME="status" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE ="false" COMMENT="if the input, output and outputerr fields are text rather than file pointers" PREVIOUS="checkpointid" NEXT="description"/>
+                <FIELD NAME="description" TYPE="char" LENGTH="1333" NOTNULL="false" SEQUENCE="false" COMMENT="a description of the test (there is no name field)" PREVIOUS="status" NEXT="foreassessmentonly"/>
+                <FIELD NAME="gradeonly" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="if the test is for assessment only" PREVIOUS="description" NEXT="runtimeargs"/>
+                <FIELD NAME="runtimeargs" TYPE="char" LENGTH="200" NOTNULL="false" SEQUENCE="false" COMMENT="runtime arguments specific to this test" PREVIOUS="foreassessmentonly" NEXT="ioastext"/>
+                <FIELD NAME="ioastext" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE ="false" COMMENT="if the input, output and outputerr fields are text rather than file pointers" PREVIOUS="runtimeargs" NEXT="input"/>
+                <FIELD NAME="input" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="the input for the test (text or file pointer)" PREVIOUS="ioastext" NEXT="output"/>
+                <FIELD NAME="output" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="the output for the test (text or file pointer)" PREVIOUS="input" NEXT="outputerr"/>
+                <FIELD NAME="outputerr" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="the outputerr for the test (text or file pointer)" PREVIOUS="output" NEXT="retval"/>
+                <FIELD NAME="retval" TYPE="int" LENGTH="5" NOTNULL="false" SEQUENCE="false" COMMENT="the return value of the test" PREVIOUS="outputerr" NEXT="ordering"/>
+                <FIELD NAME="ordering" TYPE="int" LENGTH="3" NOTNULL="true" SEQUENCE="false" COMMENT="an integer that defined the order of the test for the checkpoint" PREVIOUS="retval" NEXT="marks"/>
+                <FIELD NAME="marks" TYPE="int" LENGTH="3" NOTNULL="true" SEQUENCE="false" DEFAULT="2" COMMENT="the marks for this specific test (marks are equally divided with any remainder added to the last test)" PREVIOUS="ordering"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+                <KEY NAME="checkpointid" TYPE="foreign" FIELDS="checkpointid" REFTABLE="codehandin_checkpoint" REFFIELDS="id"/>
+            </KEYS>
+            <INDEXES>
+                <INDEX NAME="checkpointid" UNIQUE="false" FIELDS="checkpointid"/>
+            </INDEXES>    
+        </TABLE>
+        <TABLE NAME="codehandin_submission" COMMENT="Codehandin submissions and grades" PREVIOUS="codehandin_test" NEXT="codehandin_runtime"> 
+            <FIELDS>
+                <FIELD NAME="submissionid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" COMMENT="the id of the submission (references id in mdl_assignment_submission)" NEXT="auto_grade"/>
+                <FIELD NAME="auto_grade" TYPE="int" LENGTH="3" NOTNULL="true" SEQUENCE="false" COMMENT="the grade from the automatic assessment" PREVIOUS="submissionid" NEXT="style_grade"/>
+                <FIELD NAME="style_grade" TYPE="int" LENGTH="3" NOTNULL="true" SEQUENCE="false" COMMENT="the grade for style supplied by the teacher" PREVIOUS="auto_grade" NEXT="compiles"/>
+                <FIELD NAME="compiles" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="1" SEQUENCE="false" COMMENT="if the project compiles" PREVIOUS="style_grade"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="submissionid"/>
+                <KEY NAME="submissionid" TYPE="foreign" FIELDS="submissionid" REFTABLE="assignment_submission" REFFIELDS="id"/>
+            </KEYS>
+        </TABLE>
+        <TABLE NAME="codehandin_runtime" COMMENT="Stores the runtimes for languages" PREVIOUS="codehandin_submission">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="3" NOTNULL="true" SEQUENCE="true" NEXT="shortname"/>
+                <FIELD NAME="shortname" TYPE="char" LENGTH="20" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="run_command"/>
+                <FIELD NAME="runcommand" TYPE="char" LENGTH="200" NOTNULL="false" SEQUENCE="false" COMMENT="The actual command to be run. $file will insert the user's file name into the string." PREVIOUS="shortname" NEXT="compile_command"/>
+                <FIELD NAME="compilecommand" TYPE="char" LENGTH="200" NOTNULL="false" SEQUENCE="false" COMMENT="The command to compile the users files." PREVIOUS="run_command" NEXT="remove_extension"/>
+                <FIELD NAME="removeextension" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false" COMMENT="Remove the file extension when placing the user's file in the run command." PREVIOUS="compile_command"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+            </KEYS>
+        </TABLE>
+    </TABLES>
+</XMLDB>
