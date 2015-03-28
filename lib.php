@@ -34,7 +34,7 @@ defined('MOODLE_INTERNAL') || die();
  * @param bool $forcedownload
  * @return bool false if file not found, does not return if found - just send the file
  */
-function assignsubmission_codehandin_pluginfile($course,
+function assignsubmission_codehandin_submission_pluginfile($course,
                                           $cm,
                                           context $context,
                                           $filearea,

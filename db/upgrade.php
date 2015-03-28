@@ -38,7 +38,7 @@ defined('MOODLE_INTERNAL') || die();
  * @param int $oldversion
  * @return bool
  */
-function xmldb_assignsubmission_codehandin_upgrade($oldversion) {
+function xmldb_assignsubmission_codehandin_submission_upgrade($oldversion) {
     global $DB;
 
     $dbman = $DB->get_manager(); // loads ddl manager and xmldb classes

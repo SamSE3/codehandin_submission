@@ -20,13 +20,13 @@
  *
  * Never include this file from your lib.php!
  *
- * @package    assignsubmission_codehandin
+ * @package    assignsubmission_codehandin_submission
  * @copyright  2014 Jonathan Mackenzie & Samuel Deane
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/local/codehandin/locallib.php'); // add the web service libary
+require_once($CFG->dirroot . '/local/codehandin_webservice/locallib.php'); // add the web service libary
 //require_once($CFG->dirroot . "/mod/assign/submission/locallib.php");
 
 /**
@@ -39,7 +39,7 @@ require_once($CFG->dirroot . '/local/codehandin/locallib.php'); // add the web s
 //    return new stdClass();
 //}
 
-class assign_submission_codehandin extends assign_submission_plugin {
+class assign_submission_codehandin_submission extends assign_submission_plugin {
 
     private $grade_info;
 
@@ -48,7 +48,7 @@ class assign_submission_codehandin extends assign_submission_plugin {
      * @return string
      */
     public function get_name() {
-        return get_string('pluginname', 'assignsubmission_codehandin');
+        return get_string('pluginname', 'assignsubmission_codehandin_submission');
     }
 
     /**
@@ -77,16 +77,16 @@ class assign_submission_codehandin extends assign_submission_plugin {
 
             $contextids = array();
             $contextids[$assignmentid] = $context->id;
-            $CHIData = local_codehandin::fetch_assignments_raw($assignmentid, $contextids); // get the first codehandin of the first course
+            $CHIData = local_codehandin_webservice::fetch_assignments_raw($assignmentid, $contextids); // get the first codehandin of the first course
             if (isset($CHIData->courses)) {
                 $codehandin = $CHIData->courses[0]['codehandins'][0];
-                $default_values['assignsubmission_codehandin_proglang'] = $codehandin['proglangid'];
-                $default_values['assignsubmission_codehandin_mustattemptcompile'] = $codehandin['mustattemptcompile'];
-//                $draftspectestid = file_get_submitted_draft_itemid('assignsubmission_codehandin_spectest');
-//                $draftspectestassessmentid = file_get_submitted_draft_itemid('assignsubmission_codehandin_spectestassessment');
-//                file_prepare_draft_area($draftspectestid, $context->id, 'assignsubmission_codehandin', CODEHANDIN_FILEAREA, $assignmentid, $this->get_file_options());
-//                file_prepare_draft_area($draftspectestassessmentid, $context->id, 'assignsubmission_codehandin', CODEHANDIN_FILEAREA, $assignmentid, $this->get_file_options());
-                $default_values['assignsubmission_codehandin_spectestonly'] = $codehandin['spectestonly'];
+                $default_values['assignsubmission_codehandin_submission_proglang'] = $codehandin['proglangid'];
+                $default_values['assignsubmission_codehandin_submission_mustattemptcompile'] = $codehandin['mustattemptcompile'];
+//                $draftspectestid = file_get_submitted_draft_itemid('assignsubmission_codehandin_submission_spectest');
+//                $draftspectestassessmentid = file_get_submitted_draft_itemid('assignsubmission_codehandin_submission_spectestassessment');
+//                file_prepare_draft_area($draftspectestid, $context->id, 'assignsubmission_codehandin_submission', CODEHANDIN_FILEAREA, $assignmentid, $this->get_file_options());
+//                file_prepare_draft_area($draftspectestassessmentid, $context->id, 'assignsubmission_codehandin_submission', CODEHANDIN_FILEAREA, $assignmentid, $this->get_file_options());
+                $default_values['assignsubmission_codehandin_submission_spectestonly'] = $codehandin['spectestonly'];
             }
         }
     }
@@ -103,39 +103,39 @@ class assign_submission_codehandin extends assign_submission_plugin {
         //require_once('checkpoint_form.php');
         //$assignmentid = $this->assignment->get_instance()->id;
         //echo var_dump();
-        $defaultproglang = get_config('assignsubmission_codehandin', 'defaultproglang');
-        $mustattemptcompile = get_config('assignsubmission_codehandin', 'mustattemptcompile');
+        $defaultproglang = get_config('assignsubmission_codehandin_submission', 'defaultproglang');
+        $mustattemptcompile = get_config('assignsubmission_codehandin_submission', 'mustattemptcompile');
 
         // set the programming language
         $languages = $DB->get_records_select_menu('codehandin_proglang', null, null, 'id', 'id, name');
-        $mform->addElement('select', 'assignsubmission_codehandin_proglang', get_string('proglang', 'assignsubmission_codehandin'), $languages);
-        $mform->addHelpButton('assignsubmission_codehandin_proglang', 'proglang', 'assignsubmission_codehandin');
-        $mform->setDefault('assignsubmission_codehandin_proglang', $defaultproglang);
-        $mform->disabledIf('assignsubmission_codehandin_proglang', 'assignsubmission_codehandin_enabled', 'notchecked');
+        $mform->addElement('select', 'assignsubmission_codehandin_submission_proglang', get_string('proglang', 'assignsubmission_codehandin_submission'), $languages);
+        $mform->addHelpButton('assignsubmission_codehandin_submission_proglang', 'proglang', 'assignsubmission_codehandin_submission');
+        $mform->setDefault('assignsubmission_codehandin_submission_proglang', $defaultproglang);
+        $mform->disabledIf('assignsubmission_codehandin_submission_proglang', 'assignsubmission_codehandin_submission_enabled', 'notchecked');
 
         // select if submissions must have been attemptedly compiled
-        $mform->addElement('checkbox', 'assignsubmission_codehandin_mustattemptcompile', get_string('mustattemptcompile', 'assignsubmission_codehandin'));
-        $mform->addHelpButton('assignsubmission_codehandin_mustattemptcompile', 'mustattemptcompile', 'assignsubmission_codehandin');
-        $mform->setDefault('assignsubmission_codehandin_mustattemptcompile', $mustattemptcompile);
-        $mform->disabledIf('assignsubmission_codehandin_mustattemptcompile', 'assignsubmission_codehandin_enabled', 'notchecked');
+        $mform->addElement('checkbox', 'assignsubmission_codehandin_submission_mustattemptcompile', get_string('mustattemptcompile', 'assignsubmission_codehandin_submission'));
+        $mform->addHelpButton('assignsubmission_codehandin_submission_mustattemptcompile', 'mustattemptcompile', 'assignsubmission_codehandin_submission');
+        $mform->setDefault('assignsubmission_codehandin_submission_mustattemptcompile', $mustattemptcompile);
+        $mform->disabledIf('assignsubmission_codehandin_submission_mustattemptcompile', 'assignsubmission_codehandin_submission_enabled', 'notchecked');
 
-        $mform->addElement('checkbox', 'assignsubmission_codehandin_spectestonly', get_string('spectestonly', 'assignsubmission_codehandin'));
-        $mform->addHelpButton('assignsubmission_codehandin_spectestonly', 'spectestonly', 'assignsubmission_codehandin');
-        $mform->disabledIf('assignsubmission_codehandin_spectestonly', 'assignsubmission_codehandin_enabled', 'notchecked');
+        $mform->addElement('checkbox', 'assignsubmission_codehandin_submission_spectestonly', get_string('spectestonly', 'assignsubmission_codehandin_submission'));
+        $mform->addHelpButton('assignsubmission_codehandin_submission_spectestonly', 'spectestonly', 'assignsubmission_codehandin_submission');
+        $mform->disabledIf('assignsubmission_codehandin_submission_spectestonly', 'assignsubmission_codehandin_submission_enabled', 'notchecked');
 
-//        $mform->addElement('filepicker', 'assignsubmission_codehandin_spectest', get_string('spectest', 'assignsubmission_codehandin'), null, $this->get_file_options());
-//        //$mform->addElement('filepicker', 'taskinput_filemanager', get_string('spectest', 'assignsubmission_codehandin'), null,  $this->get_file_options());
-//        $mform->addHelpButton('assignsubmission_codehandin_spectest', 'spectest', 'assignsubmission_codehandin');
-//        //$mform->addRule('assignsubmission_codehandin_spectest', get_string('required'), 'required', null, 'client');
-//        $mform->disabledIf('assignsubmission_codehandin_spectest', 'assignsubmission_codehandin_enabled', 'notchecked');
-//        $mform->disabledIf('assignsubmission_codehandin_spectest', 'assignsubmission_codehandin_spectestonly', 'notchecked');
+//        $mform->addElement('filepicker', 'assignsubmission_codehandin_submission_spectest', get_string('spectest', 'assignsubmission_codehandin_submission'), null, $this->get_file_options());
+//        //$mform->addElement('filepicker', 'taskinput_filemanager', get_string('spectest', 'assignsubmission_codehandin_submission'), null,  $this->get_file_options());
+//        $mform->addHelpButton('assignsubmission_codehandin_submission_spectest', 'spectest', 'assignsubmission_codehandin_submission');
+//        //$mform->addRule('assignsubmission_codehandin_submission_spectest', get_string('required'), 'required', null, 'client');
+//        $mform->disabledIf('assignsubmission_codehandin_submission_spectest', 'assignsubmission_codehandin_submission_enabled', 'notchecked');
+//        $mform->disabledIf('assignsubmission_codehandin_submission_spectest', 'assignsubmission_codehandin_submission_spectestonly', 'notchecked');
 //
-//        $mform->addElement('filepicker', 'assignsubmission_codehandin_spectestassessment', get_string('spectestassessment', 'assignsubmission_codehandin'), null, $this->get_file_options());
-//        //$mform->addElement('filepicker', 'taskoutput_filemanager', get_string('spectestassessment', 'assignsubmission_codehandin'), null,  $this->get_file_options());
-//        $mform->addHelpButton('assignsubmission_codehandin_spectestassessment', 'spectestassessment', 'assignsubmission_codehandin');
-//        //$mform->addRule('assignsubmission_codehandin_spectestassessment', get_string('required'), 'required', null, 'client');
-//        $mform->disabledIf('assignsubmission_codehandin_spectestassessment', 'assignsubmission_codehandin_enabled', 'notchecked');
-//        $mform->disabledIf('assignsubmission_codehandin_spectestassessment', 'assignsubmission_codehandin_spectestonly', 'notchecked');
+//        $mform->addElement('filepicker', 'assignsubmission_codehandin_submission_spectestassessment', get_string('spectestassessment', 'assignsubmission_codehandin_submission'), null, $this->get_file_options());
+//        //$mform->addElement('filepicker', 'taskoutput_filemanager', get_string('spectestassessment', 'assignsubmission_codehandin_submission'), null,  $this->get_file_options());
+//        $mform->addHelpButton('assignsubmission_codehandin_submission_spectestassessment', 'spectestassessment', 'assignsubmission_codehandin_submission');
+//        //$mform->addRule('assignsubmission_codehandin_submission_spectestassessment', get_string('required'), 'required', null, 'client');
+//        $mform->disabledIf('assignsubmission_codehandin_submission_spectestassessment', 'assignsubmission_codehandin_submission_enabled', 'notchecked');
+//        $mform->disabledIf('assignsubmission_codehandin_submission_spectestassessment', 'assignsubmission_codehandin_submission_spectestonly', 'notchecked');
     }
 
     /**
@@ -149,17 +149,17 @@ class assign_submission_codehandin extends assign_submission_plugin {
 
         $codehandin = new stdClass();
         $codehandin->id = (int) $this->assignment->get_instance()->id;
-        $codehandin->proglangid = (int) $data->assignsubmission_codehandin_proglang;
-        $codehandin->mustattemptcompile = isset($data->assignsubmission_codehandin_mustattemptcompile) ? 1 : 0;
-        $codehandin->spectestonly = isset($data->assignsubmission_codehandin_spectestonly) ? 1 : 0;
+        $codehandin->proglangid = (int) $data->assignsubmission_codehandin_submission_proglang;
+        $codehandin->mustattemptcompile = isset($data->assignsubmission_codehandin_submission_mustattemptcompile) ? 1 : 0;
+        $codehandin->spectestonly = isset($data->assignsubmission_codehandin_submission_spectestonly) ? 1 : 0;
         //$codehandin->funcpercent = (int) $data->funcpercent;
         // should save files here
-//        if (isset($data->assignsubmission_codehandin_spectestonly)) {
-//            $codehandin->draftspectestid = $data->assignsubmission_codehandin_spectest;
-//            $codehandin->draftspectestassessmentid = $data->assignsubmission_codehandin_spectestassessment;
+//        if (isset($data->assignsubmission_codehandin_submission_spectestonly)) {
+//            $codehandin->draftspectestid = $data->assignsubmission_codehandin_submission_spectest;
+//            $codehandin->draftspectestassessmentid = $data->assignsubmission_codehandin_submission_spectestassessment;
 //        }
         $data->assignfeedback_codehandin_enabled = 1;
-        local_codehandin::insert_codehandin($codehandin);
+        local_codehandin_webservice::insert_codehandin($codehandin);
 
         return true;
     }
@@ -187,7 +187,7 @@ class assign_submission_codehandin extends assign_submission_plugin {
      */
     private function count_files($submissionid, $area) {
         $fs = get_file_storage();
-        $files = $fs->get_area_files($this->assignment->get_context()->id, 'assignsubmission_codehandin', $area, $submissionid, 'id', false);
+        $files = $fs->get_area_files($this->assignment->get_context()->id, 'assignsubmission_codehandin_submission', $area, $submissionid, 'id', false);
         return count($files);
     }
 
@@ -257,7 +257,7 @@ class assign_submission_codehandin extends assign_submission_plugin {
 //     */
 //    public function get_files(stdClass $submission, stdClass $user) {
 //        $fs = get_file_storage();
-//        $files = $fs->get_area_files($this->assignment->get_context()->id, 'assignsubmission_codehandin', $area, $submissionid, 'id', false);
+//        $files = $fs->get_area_files($this->assignment->get_context()->id, 'assignsubmission_codehandin_submission', $area, $submissionid, 'id', false);
 //        return count($files);
 //        return array();
 //    }
@@ -267,7 +267,7 @@ class assign_submission_codehandin extends assign_submission_plugin {
      * @return array - An array of fileareas (keys) and descriptions (values)
      */
     public function get_file_areas() {
-        return local_codehandinws_local::getFileAreas();
+        return local_codehandinws_webservice::getFileAreas();
     }
 
     /**

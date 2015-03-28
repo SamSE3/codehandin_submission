@@ -16,16 +16,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @see uninstall_plugin()
+ * Definition of log events
  *
- * @package    assignsubmission_codehandin
- * @copyright  2014 Jonathan Mackenzie & Samuel Deane <your@email.adress>
+ * NOTE: this is an example how to insert log event during installation/update.
+ * It is not really essential to know about it, but these logs were created as example
+ * in the previous 1.9 codehandin.
+ *
+ * @package    assignsubmission_codehandin 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-/**
- * Custom uninstallation procedure
- */
-function xmldb_codehandin_submission_uninstall() {
-    return true;
-}
+defined('MOODLE_INTERNAL') || die();
+
+global $DB;
+
+$logs = array(
+    array('module'=>'codehandin', 'action'=>'add', 'mtable'=>'codehandin', 'field'=>'name'),
+    array('module'=>'codehandin', 'action'=>'update', 'mtable'=>'codehandin', 'field'=>'name'),
+    array('module'=>'codehandin', 'action'=>'view', 'mtable'=>'codehandin', 'field'=>'name'),
+    array('module'=>'codehandin', 'action'=>'view all', 'mtable'=>'codehandin', 'field'=>'name')
+);

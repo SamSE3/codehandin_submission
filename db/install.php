@@ -33,15 +33,15 @@ function endc($array) {
  * Code run after the assignsubmission_codehandin module database tables have been created.
  * @return bool
  */
-function xmldb_assignsubmission_codehandin_install() {
+function xmldb_assignsubmission_codehandin_submission_install() {
     global $CFG, $DB, $OUTPUT;
 
     $pluginmanager = new assign_plugin_manager('assignsubmission');
-    $pluginmanager->move_plugin('codehandin', 'down');
-    $pluginmanager->move_plugin('codehandin', 'down');
-    $pluginmanager->move_plugin('codehandin', 'down');
-    $pluginmanager->move_plugin('codehandin', 'down');
-    $pluginmanager->move_plugin('codehandin', 'down');
+    $pluginmanager->move_plugin('codehandin_submission', 'down');
+    $pluginmanager->move_plugin('codehandin_submission', 'down');
+    $pluginmanager->move_plugin('codehandin_submission', 'down');
+    $pluginmanager->move_plugin('codehandin_submission', 'down');
+    $pluginmanager->move_plugin('codehandin_submission', 'down');
 
     $record1 = new stdClass();
     //$record1->id = 1;    

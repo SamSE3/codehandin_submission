@@ -19,7 +19,7 @@
 /**
  * Defines the global settings of the codehandin submission plugin
  * 
- * @package    assignsubmission_codehandin
+ * @package    assignsubmission_codehandin_submission
  * @copyright  2014 Samuel Deane
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -28,16 +28,16 @@
 global $DB;
 
 // Note: Should never be auto enabled by default!
-//$settings->add(new admin_setting_configcheckbox('assignsubmission_codehandin/default',
-//                   new lang_string('default', 'assignsubmission_codehandin'),
-//                   new lang_string('default_help', 'assignsubmission_codehandin'), 0));
+//$settings->add(new admin_setting_configcheckbox('assignsubmission_codehandin_submission/default',
+//                   new lang_string('default', 'assignsubmission_codehandin_submission'),
+//                   new lang_string('default_help', 'assignsubmission_codehandin_submission'), 0));
 
-$name = new lang_string('defaultproglang', 'assignsubmission_codehandin');
-$description = new lang_string('defaultproglang_help', 'assignsubmission_codehandin');
+$name = new lang_string('defaultproglang', 'assignsubmission_codehandin_submission');
+$description = new lang_string('defaultproglang_help', 'assignsubmission_codehandin_submission');
 $languages = $DB->get_records_select_menu('codehandin_proglang', null, null, 'id ASC', 'id, name');
-$settings->add(new admin_setting_configselect('assignsubmission_codehandin/defaultproglang', 
+$settings->add(new admin_setting_configselect('assignsubmission_codehandin_submission/defaultproglang', 
         $name, $description, 1, $languages)); 
 
-$settings->add(new admin_setting_configcheckbox('assignsubmission_codehandin/mustattemptcompile',
-                   new lang_string('mustattemptcompile', 'assignsubmission_codehandin'),
-                   new lang_string('mustattemptcompile_help', 'assignsubmission_codehandin'), 1));
+$settings->add(new admin_setting_configcheckbox('assignsubmission_codehandin_submission/mustattemptcompile',
+                   new lang_string('mustattemptcompile', 'assignsubmission_codehandin_submission'),
+                   new lang_string('mustattemptcompile_help', 'assignsubmission_codehandin_submission'), 1));

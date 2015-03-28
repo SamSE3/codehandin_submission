@@ -390,8 +390,8 @@ class assign_submission_codehandin extends assign_submission_plugin {
         $codehandin_cp->ordering = $data->assignsubmission_codehandin_cpordering;
         $cpid = $DB->insert_record("codehandin_checkpoint", $codehandin_cp, true, false);
 
-        $this->get_codehandins_assignfiles($assignmentid);
-        $this->get_codehandins_assignfiles(0);
+        $this->get_codehandin_submission_assignfiles($assignmentid);
+        $this->get_codehandin_submission_assignfiles(0);
 
         $codehandin_test = new stdClass();
         $codehandin_test->checkpointid = $cpid;
@@ -444,8 +444,8 @@ class assign_submission_codehandin extends assign_submission_plugin {
     public function get_form_elements($submission, MoodleQuickForm $mform, stdClass $data) {
         global $DB;
 
-        if (isset($data->codehandinS)) {
-            $data->codehandinS = '';
+        if (isset($data->codehandins)) {
+            $data->codehandins = '';
         }
 
 
@@ -550,7 +550,7 @@ class assign_submission_codehandin extends assign_submission_plugin {
      * @param stdClass $user The user record - unused
      * @return array - return an array of files indexed by filename
      */
-    public function get_codehandins_assignfiles($assignmentid) {
+    public function get_codehandin_submission_assignfiles($assignmentid) {
         $result = array();
         $fs = get_file_storage();
 
@@ -665,7 +665,7 @@ class assign_submission_codehandin extends assign_submission_plugin {
 //        }
 //
 //        // Now copy the area files.
-//        $this->assignment->copy_area_codehandins_for_upgrade($oldcontext->id, 'mod_assignment', 'submission', $oldsubmission->id, $this->assignment->get_context()->id, 'assignsubmission_codehandin', ASSIGNSUBMISSION_CODEHANDIN_FILEAREA, $submission->id);
+//        $this->assignment->copy_area_codehandin_submission_for_upgrade($oldcontext->id, 'mod_assignment', 'submission', $oldsubmission->id, $this->assignment->get_context()->id, 'assignsubmission_codehandin', ASSIGNSUBMISSION_CODEHANDIN_FILEAREA, $submission->id);
 //
 //        return true;
         return false;
@@ -676,7 +676,7 @@ class assign_submission_codehandin extends assign_submission_plugin {
      * @param stdClass $submission
      */
     public function is_empty(stdClass $submission) { //called on save
-        return $this->count_codehandins($submission->id, ASSIGNSUBMISSION_CODEHANDIN_FILEAREA) == 0;
+        return $this->count_codehandin_submission($submission->id, ASSIGNSUBMISSION_CODEHANDIN_FILEAREA) == 0;
     }
 
     /**
