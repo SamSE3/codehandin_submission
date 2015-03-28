@@ -25,8 +25,8 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'Codehandin';
-$string['pluginnameplural'] = 'Codehandins';
+$string['pluginname'] = 'Codehandin Submission';
+$string['pluginnameplural'] = 'Codehandin Submissions';
 $string['pluginname_help'] = 'Use the codehandin plugin assignments that require code submission. Code is submitted through a webservice, or the web interface. Teacher defined tests allow a mapping from input->output with optional runtime arguments. It is recommended that each checkpoint have at least 1 test marked as assessment.';
 $string['codehandinfieldset'] = 'Custom example fieldset';
 $string['codehandinname'] = 'codehandin name';
@@ -34,7 +34,7 @@ $string['codehandinname_help'] = 'This is the content of the help tooltip associ
 $string['codehandin'] = 'codehandin';
 $string['pluginadministration'] = 'codehandin administration';
 $string['introduction'] = 'an introduction for the handin plugin ... etc.';
-$string['enabled'] = 'enable the code handin plugin';
+$string['enabled'] = 'enable the codehandin submission plugin';
 $string['enabled_help'] = '';
 $string['proglang'] = 'the programming language';
 $string['proglang_help'] = 'select the programming language the assignment is to be written in';

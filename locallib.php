@@ -26,7 +26,7 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/local/codehandinws/locallib.php'); // add the web service libary
+require_once($CFG->dirroot . '/local/codehandin/locallib.php'); // add the web service libary
 //require_once($CFG->dirroot . "/mod/assign/submission/locallib.php");
 
 /**
@@ -77,7 +77,7 @@ class assign_submission_codehandin extends assign_submission_plugin {
 
             $contextids = array();
             $contextids[$assignmentid] = $context->id;
-            $CHIData = local_codehandinws_local::fetch_assignments_raw($assignmentid, $contextids); // get the first codehandin of the first course
+            $CHIData = local_codehandin::fetch_assignments_raw($assignmentid, $contextids); // get the first codehandin of the first course
             if (isset($CHIData->courses)) {
                 $codehandin = $CHIData->courses[0]['codehandins'][0];
                 $default_values['assignsubmission_codehandin_proglang'] = $codehandin['proglangid'];
@@ -159,7 +159,7 @@ class assign_submission_codehandin extends assign_submission_plugin {
 //            $codehandin->draftspectestassessmentid = $data->assignsubmission_codehandin_spectestassessment;
 //        }
         $data->assignfeedback_codehandin_enabled = 1;
-        local_codehandinws_local::insert_codehandin($codehandin);
+        local_codehandin::insert_codehandin($codehandin);
 
         return true;
     }

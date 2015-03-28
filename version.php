@@ -30,9 +30,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2014092200;      // If version == 0 then module will not be installed
+$plugin->version   = 2015030100;      // If version == 0 then module will not be installed
 $plugin->requires  = 2012031900;      // Requires this Moodle version
-$plugin->cron      = 0;               // Period for cron to check this module (secs)
+$plugin->cron = 0;               // Period for cron to check this module (secs)
 $plugin->component = 'assignsubmission_codehandin'; // To check on upgrade, that module sits in correct place
 $plugin->maturity = MATURITY_ALPHA;  //matuirty is alpha ... see http://docs.moodle.org/dev/version.php
        
