@@ -46,7 +46,7 @@ define('ASSIGNSUBMISSION_CODEHANDIN_FILEAREA', 'codehandin_files');
 //    return new stdClass();
 //}
 
-class assign_submission_codehandin extends assign_submission_plugin {
+class assign_submission_codehandin_submission extends assign_submission_plugin {
 
     private $mydata;
     private $thismform;
@@ -242,7 +242,7 @@ class assign_submission_codehandin extends assign_submission_plugin {
 
 
 //        // add checkpoint ... not enabled yet 
-//        $edittemplateurl = new moodle_url('/mod/assign/submission/codehandin/addcp.php', array('courseid' => $COURSE->id));
+//        $edittemplateurl = new moodle_url('/mod/assign/submission/codehandin_submission/addcp.php', array('courseid' => $COURSE->id));
 //        $edittemplatelink = html_writer::link($edittemplateurl, get_string('addcp', 'assignsubmission_codehandin'),
 //                                              array('target' => '_blank'));
 //        $mform->addElement('static', 'assignsubmission_codehandin_addcp', '', $edittemplatelink);
